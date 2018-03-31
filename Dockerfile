@@ -59,6 +59,10 @@ RUN cp -r /usr/lib/python3.6/site-packages /usr/local/lib/python3.6/ && \
     rm -rf /usr/lib/python3.6
 RUN pip install pipenv==9.0.3 jupyter
 
+# jupyter notebook is breaking, because tornado>=5.x.x is breaking
+# below is a temprorary fix, forcing older version of tornado to be used
+RUN pip uninstall tornado --yes && pip install tornado==4.5.3
+
 # Copy server files and data into the container. Note: any directories that
 # you wish to copy into the container must be excluded from the .dockerignore
 # file, or you will encounter a copy error
