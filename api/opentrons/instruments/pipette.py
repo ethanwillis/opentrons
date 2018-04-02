@@ -172,11 +172,9 @@ class Pipette:
                 "'max_volume' is deprecated, use `ul_per_mm` in constructor"
             )
 
-        self.ul_per_mm = ul_per_mm
+        self.ul_per_mm = None
         self.min_volume = min_volume
-        t = self._get_plunger_position('top')
-        b = self._get_plunger_position('bottom')
-        self.max_volume = (t - b) * self.ul_per_mm
+        self.set_ul_per_mm(ul_per_mm)
 
         self._pick_up_current = None
         self.set_pick_up_current(DEFAULT_PLUNGE_CURRENT)
@@ -1668,6 +1666,21 @@ class Pipette:
             self.set_speed(
                 dispense=self._ul_to_mm(dispense))
         return self
+
+    def set_ul_per_mm(self, ul_per_mm):
+        """
+        Set the plunger's ul/mm conversion value.
+        The pipette's maximum uL volume is set in the method, by multiplying
+        the pipette's travel distance by the ul/mm
+
+        ul_per_mm: float
+            The number of uL that is aspirated/dispensed
+            given a distance in millimeters
+        """
+        self.ul_per_mm = ul_per_mm
+        t = self._get_plunger_position('top')
+        b = self._get_plunger_position('bottom')
+        self.max_volume = (t - b) * self.ul_per_mm
 
     def set_pick_up_current(self, amperes):
         """
